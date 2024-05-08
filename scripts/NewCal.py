@@ -3,37 +3,49 @@ import cv2
 import glob
 import os
 
-def calibrate_camera(images, camera_name):
+
+def split_stereo_image(stereo_image):
+    # Assuming the stereo image is a single image composed of two side-by-side images
+    height, width = stereo_image.shape[:2]
+    midpoint = width // 2
+    left_img = stereo_image[:, :midpoint]
+    right_img = stereo_image[:, midpoint:]
+    return left_img, right_img
+
+
+def calibrate_camera(images):
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     objp = np.zeros((6*7, 3), np.float32)
     objp[:, :2] = np.mgrid[0:7, 0:6].T.reshape(-1, 2)
     objpoints = []
     imgpoints = []
-    gray = None
 
     for fname in images:
-        img = cv2.imread(fname)
-        if img is None:
+        stereo_img = cv2.imread(fname)
+        if stereo_img is None:
             print(f"Failed to load {fname}")
             continue
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        ret, corners = cv2.findChessboardCorners(gray, (7, 6), None)
-        if ret:
-            objpoints.append(objp)
-            corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
-            imgpoints.append(corners2)
-            cv2.drawChessboardCorners(img, (7,6), corners2, ret)
-            cv2.imshow('img', img)
-            cv2.waitKey(500)
-            print(f"Detected corners in {fname}")
-        else:
-            print(f"Failed to detect corners in {fname}")
-    cv2.destroyAllWindows()
+
+        left_img, right_img = split_stereo_image(stereo_img)  # Split the stereo image
+        for img, side in zip([left_img, right_img], ['Left', 'Right']):
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            ret, corners = cv2.findChessboardCorners(gray, (7, 6), None)
+            if ret:
+                objpoints.append(objp)
+                corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+                imgpoints.append(corners2)
+                cv2.drawChessboardCorners(img, (7, 6), corners2, ret)
+                cv2.imshow(f'{side} Image', img)
+                cv2.waitKey(500)
+                print(f"Detected corners in {fname} on {side} side")
+            else:
+                print(f"Failed to detect corners in {fname} on {side} side")
+        cv2.destroyAllWindows()
     if objpoints and imgpoints:
-        print(f"{camera_name} calibration process completed, saving data...")
+        print(f"Calibration process completed, saving data...")
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
-        print(f"{camera_name} Matrix: {mtx}")
-        print(f"{camera_name} Distortion Coefficients: {dist}")
+        print(f" Matrix: {mtx}")
+        print(f" Distortion Coefficients: {dist}")
 
         # Calculate reprojection error
         mean_error = 0
@@ -42,7 +54,7 @@ def calibrate_camera(images, camera_name):
             error = cv2.norm(imgpoints[i], imgpoints2, cv2.NORM_L2) / len(imgpoints2)
             mean_error += error
         mean_error /= len(objpoints)
-        print(f"{camera_name} total reprojection error: {mean_error}")
+        print(f" total reprojection error: {mean_error}")
 
         return mtx, dist, rvecs, tvecs
     else:
@@ -52,22 +64,15 @@ def calibrate_camera(images, camera_name):
 def main():
     os.makedirs('data', exist_ok=True)
     print("Starting calibration process...")
-    left_images = glob.glob('../images/data/imgs/leftcamera/*.png')
-    right_images = glob.glob('../images/data/imgs/rightcamera/*.png')
-    left_camera_data = calibrate_camera(left_images, "Left Camera")
-    right_camera_data = calibrate_camera(right_images, "Right Camera")
+    stereo_images = glob.glob('../images/saved_frames/*.jpg')  # Adjust path as necessary
+    camera_data = calibrate_camera(stereo_images)
 
-    if left_camera_data:
-        np.savez('data/calibration_data_left.npz', mtx=left_camera_data[0], dist=left_camera_data[1], rvecs=left_camera_data[2], tvecs=left_camera_data[3])
-        print("Left camera calibration data saved.")
+    if camera_data:
+        np.savez('../data/calibration_data.npz', mtx=camera_data[0], dist=camera_data[1], rvecs=camera_data[2], tvecs=camera_data[3])
+        print("Camera calibration data saved.")
     else:
-        print("Failed to calibrate left camera.")
+        print("Failed to calibrate camera.")
 
-    if right_camera_data:
-        np.savez('../data/calibration_data_right.npz', mtx=right_camera_data[0], dist=right_camera_data[1], rvecs=right_camera_data[2], tvecs=right_camera_data[3])
-        print("Right camera calibration data saved.")
-    else:
-        print("Failed to calibrate right camera.")
 
 if __name__ == "__main__":
     main()

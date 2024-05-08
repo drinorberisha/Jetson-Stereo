@@ -20,10 +20,6 @@ print("Applying bilateral filter to reduce noise and preserve edges...")
 left_img_filtered = cv2.cuda.bilateralFilter(left_img_gpu, 9, 75, 75, stream=stream)
 right_img_filtered = cv2.cuda.bilateralFilter(right_img_gpu, 9, 75, 75, stream=stream)
 
-# If Gaussian blur is needed, uncomment the following lines:
-# print("Applying Gaussian blur...")
-# left_img_blurred = cv2.cuda.GaussianBlur(left_img_filtered, (5, 5), 0, stream=stream)
-# right_img_blurred = cv2.cuda.GaussianBlur(right_img_filtered, (5, 5), 0, stream=stream)
 
 print("Setting up CUDA StereoSGBM with optimized parameters...")
 stereo = cv2.cuda.StereoSGBM_create(
