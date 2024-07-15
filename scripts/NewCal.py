@@ -49,7 +49,7 @@ def calibrate_single_camera(images, square_size, side):
         return None
 
 def calibrate_stereo_camera(images, square_size):
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)  # Termination criteria for stereo calibration
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)  
 
     left_calib = calibrate_single_camera(images, square_size, 'left')
     right_calib = calibrate_single_camera(images, square_size, 'right')
