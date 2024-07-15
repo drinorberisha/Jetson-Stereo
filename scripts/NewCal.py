@@ -11,9 +11,9 @@ def split_stereo_image(stereo_image):
     return left_img, right_img
 
 def calibrate_single_camera(images, square_size, side):
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)  # Termination criteria for corner refinement
     objp = np.zeros((6*7, 3), np.float32)
-    objp[:, :2] = np.mgrid[0:7, 0:6].T.reshape(-1, 2) * square_size
+    objp[:, :2] = np.mgrid[0:7, 0:6].T.reshape(-1, 2) * square_size  # Real-world coordinates of chessboard corners
 
     objpoints = []
     imgpoints = []
@@ -49,6 +49,8 @@ def calibrate_single_camera(images, square_size, side):
         return None
 
 def calibrate_stereo_camera(images, square_size):
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)  # Termination criteria for stereo calibration
+
     left_calib = calibrate_single_camera(images, square_size, 'left')
     right_calib = calibrate_single_camera(images, square_size, 'right')
 
