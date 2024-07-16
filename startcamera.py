@@ -21,7 +21,7 @@ class Start_Cameras:
         gstreamer_pipeline_string = self.gstreamer_pipeline()
         self.open(gstreamer_pipeline_string)
 
-    #Opening the cameras
+    # Opening the cameras
     def open(self, gstreamer_pipeline_string):
         gstreamer_pipeline_string = self.gstreamer_pipeline()
         try:
@@ -39,15 +39,15 @@ class Start_Cameras:
         # Grab the first frame to start the video capturing
         self.grabbed, self.frame = self.video_capture.read()
 
-    #Starting the cameras
+    # Starting the cameras
     def start(self):
         if self.running:
             print('Video capturing is already running')
             return None
         # create a thread to read the camera image
-        if self.video_capture != None:
+        if self.video_capture is not None:
             self.running = True
-            self.read_thread = threading.Thread(target=self.updateCamera, daemon=True)
+            self.read_thread = threading.Thread(target=self.updateCamera)
             self.read_thread.start()
         return self
 
@@ -73,11 +73,11 @@ class Start_Cameras:
         return grabbed, frame
 
     def release(self):
-        if self.video_capture != None:
+        if self.video_capture is not None:
             self.video_capture.release()
             self.video_capture = None
         # Now kill the thread
-        if self.read_thread != None:
+        if self.read_thread is not None:
             self.read_thread.join()
 
     # Currently there are setting frame rate on CSI Camera on Nano through gstreamer
@@ -92,28 +92,27 @@ class Start_Cameras:
             flip_method=0,
     ):
         return (
-                "nvarguscamerasrc sensor-id=%d sensor-mode=%d ! "
-                "video/x-raw(memory:NVMM), "
-                "width=(int)%d, height=(int)%d, "
-                "format=(string)NV12, framerate=(fraction)%d/1 ! "
-                "nvvidconv flip-method=%d ! "
-                "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
-                "videoconvert ! "
-                "video/x-raw, format=(string)BGR ! appsink"
-                % (
-                    self.sensor_id,
-                    sensor_mode,
-                    capture_width,
-                    capture_height,
-                    framerate,
-                    flip_method,
-                    display_width,
-                    display_height,
-                )
+            "nvarguscamerasrc sensor-id={} sensor-mode={} ! "
+            "video/x-raw(memory:NVMM), "
+            "width=(int){}, height=(int){}, "
+            "format=(string)NV12, framerate=(fraction){}/1 ! "
+            "nvvidconv flip-method={} ! "
+            "video/x-raw, width=(int){}, height=(int){}, format=(string)BGRx ! "
+            "videoconvert ! "
+            "video/x-raw, format=(string)BGR ! appsink".format(
+                self.sensor_id,
+                sensor_mode,
+                capture_width,
+                capture_height,
+                framerate,
+                flip_method,
+                display_width,
+                display_height
+            )
         )
 
 
-#This is the main. Read this first. 
+# This is the main. Read this first. 
 if __name__ == "__main__":
     left_camera = Start_Cameras(0).start()
     right_camera = Start_Cameras(1).start()
@@ -121,7 +120,7 @@ if __name__ == "__main__":
     while True:
         left_grabbed, left_frame = left_camera.read()
         right_grabbed, right_frame = right_camera.read()
-
+    
         if left_grabbed and right_grabbed:
             images = np.hstack((left_frame, right_frame))
             cv2.imshow("Camera Images", images)
