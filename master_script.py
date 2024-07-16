@@ -1,7 +1,7 @@
 import os
 
 def run_script(script_name):
-    os.system(f"python2.7.11 {script_name}")
+    os.system(f"python2.7 {script_name}")
 
 def main():
     print("Starting process...")
