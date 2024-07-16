@@ -5,7 +5,7 @@ def run_script(script_name):
 
 def main():
     print("Starting process...")
-    run_script('scripts/LiveCapture.py')
+    run_script('scripts/lc.py')
     run_script('scripts/new.py')
     # dr
     # run_script('scripts/AdaptiveHistogramEqualization.py')
