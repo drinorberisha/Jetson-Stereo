@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
 import threading
-# commenting
+
 class Start_Cameras:
 
     def __init__(self, sensor_id):
+        # Initialize instance variables
         self.video_capture = None
         self.frame = None
         self.grabbed = False
@@ -100,11 +101,22 @@ class Start_Cameras:
             )
         )
 
-def correct_color_balance(image):
+def grey_world_assumption(image):
     b, g, r = cv2.split(image)
-    r = cv2.equalizeHist(r)
-    g = cv2.equalizeHist(g)
-    b = cv2.equalizeHist(b)
+    avg_b = np.mean(b)
+    avg_g = np.mean(g)
+    avg_r = np.mean(r)
+    
+    avg_gray = (avg_b + avg_g + avg_r) / 3
+    
+    scale_b = avg_gray / avg_b
+    scale_g = avg_gray / avg_g
+    scale_r = avg_gray / avg_r
+    
+    b = cv2.multiply(b, scale_b)
+    g = cv2.multiply(g, scale_g)
+    r = cv2.multiply(r, scale_r)
+    
     return cv2.merge((b, g, r))
 
 if __name__ == "__main__":
@@ -116,8 +128,8 @@ if __name__ == "__main__":
         right_grabbed, right_frame = right_camera.read()
     
         if left_grabbed and right_grabbed:
-            left_frame = correct_color_balance(left_frame)
-            right_frame = correct_color_balance(right_frame)
+            left_frame = grey_world_assumption(left_frame)
+            right_frame = grey_world_assumption(right_frame)
 
             images = np.hstack((left_frame, right_frame))
             cv2.imshow("Camera Images", images)
