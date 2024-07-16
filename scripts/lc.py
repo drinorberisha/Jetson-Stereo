@@ -21,7 +21,7 @@ def TakePictures():
 
         counter = 0
         t2 = datetime.now()
-        images_dir = '../images/saved_frames'  # Updated directory to match your existing setup
+        images_dir = 'images/saved_frames'  # Updated directory to match your existing setup
         if not path.isdir(images_dir):
             os.makedirs(images_dir)
             print("Directory created: {}".format(images_dir))

@@ -101,7 +101,7 @@ def stereo_calibrate(stereo_images, board_size, square_size):
 def main():
     square_size = 30  # Size of the chessboard square in mm
     board_size = (7, 6)  # Number of inner corners in the chessboard pattern
-    image_folder = '../images/saved_frames'  # Folder containing stereo images
+    image_folder = 'images/saved_frames'  # Folder containing stereo images
 
     stereo_image_files = sorted(glob.glob(os.path.join(image_folder, '*.jpg')))
 
@@ -123,11 +123,11 @@ def main():
         return
 
     # Save calibration data to file
-    np.savez('../data/stereo_calibration_data.npz', **calibration_data)
+    np.savez('data/stereo_calibration_data.npz', **calibration_data)
     print("Stereo calibration data saved.")
 
     # Load calibration data from file and display rectified images
-    data = np.load('../data/stereo_calibration_data.npz')
+    data = np.load('data/stereo_calibration_data.npz')
     mtx_left = data['mtx_left']
     dist_left = data['dist_left']
     mtx_right = data['mtx_right']
