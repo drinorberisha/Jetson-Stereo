@@ -1,3 +1,42 @@
 wget https://files.pythonhosted.org/packages/source/v/virtualenv/virtualenv-16.7.9.tar.gz
 tar xzf virtualenv-16.7.9.tar.gz
 
+tar xzf virtualenv-16.7.9.tar.gz
+
+jetsonnano@jetsonnano-desktop:~/Desktop/Jetson-Stereo/scripts$ python2.7 new.py  
+Gtk-Message: 13:44:06.238: Failed to load module "canberra-gtk-module"
+Error: Chessboard corners not detected.
+Error: Chessboard corners not detected.
+Skipping image pair 0 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Error: Chessboard corners not detected.
+Skipping image pair 1 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Chessboard corners detected.
+Skipping image pair 2 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Error: Chessboard corners not detected.
+Skipping image pair 3 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Error: Chessboard corners not detected.
+Skipping image pair 4 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Chessboard corners detected.
+Skipping image pair 5 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Chessboard corners detected.
+Skipping image pair 6 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Error: Chessboard corners not detected.
+Skipping image pair 7 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Error: Chessboard corners not detected.
+Skipping image pair 8 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Error: Chessboard corners not detected.
+Skipping image pair 9 due to chessboard corner detection failure.
+Error: Chessboard corners not detected.
+Chessboard corners detected.
+Skipping image pair 10 due to chessboard corner detection failure.
+Error: No valid image points were found.
+Stereo calibration failed.
