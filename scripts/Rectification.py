@@ -4,7 +4,7 @@ import glob
 import os
 
 # Load calibration parameters
-calibration_data = np.load('stereo_calibration_data.npz')
+calibration_data = np.load('../data/stereo_calibration_data.npz')
 mtx_left = calibration_data['mtx_left']
 dist_left = calibration_data['dist_left']
 mtx_right = calibration_data['mtx_right']
@@ -15,8 +15,8 @@ P1 = calibration_data['P1']
 P2 = calibration_data['P2']
 
 # Directory containing the saved images
-images_dir = '../images/saved_beforerectification'
-rectified_dir = '../images/rectified_frames'
+images_dir = 'images/saved_frames'
+rectified_dir = 'images/rectified_frames'
 if not os.path.exists(rectified_dir):
     os.makedirs(rectified_dir)
 
