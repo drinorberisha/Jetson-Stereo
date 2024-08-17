@@ -10,8 +10,8 @@ F = calibration_data['F']
 # Directory containing valid image pairs and corner points
 valid_image_dir = '../images/valid_pairs'
 
-left_images = sorted(glob.glob(os.path.join(valid_image_dir, 'valid_left_*.jpg')))
-right_images = sorted(glob.glob(os.path.join(valid_image_dir, 'valid_right_*.jpg')))
+left_images = sorted(glob.glob(os.path.join(valid_image_dir, 'Im_L_*.png')))
+right_images = sorted(glob.glob(os.path.join(valid_image_dir, 'Im_R_*.png')))
 
 if not left_images or not right_images:
     print("No valid image pairs found.")
