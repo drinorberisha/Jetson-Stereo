@@ -54,6 +54,10 @@ def stereo_calibrate(left_images, right_images, board_size, square_size):
             valid_right_path = os.path.join(valid_image_dir, right_filename)
             cv2.imwrite(valid_left_path, left_img)
             cv2.imwrite(valid_right_path, right_img)
+            corners_filename = f'corners_{os.path.splitext(left_filename)[0]}.npz'
+            np.savez(os.path.join(valid_image_dir, corners_filename), 
+                     corners_left=corners_left, corners_right=corners_right)
+
         else:
             print(f"Skipping image pair {left_img_path} and {right_img_path} due to chessboard corner detection failure.")
 
